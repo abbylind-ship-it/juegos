@@ -8,70 +8,69 @@ let secuenciaUsuario = [];
 let bloqueado = true;
 
 function generarPaso() {
-    const nuevoColor = Math.floor(Math.random() * botonesColor.length);
-    secuencia.push(nuevoColor);
+  const nuevoColor = Math.floor(Math.random() * botonesColor.length);
+  secuencia.push(nuevoColor);
 }
 
 function encenderBoton(indiceColor) {
-    const boton = botonesColor[indiceColor];
-    boton.classList.add("activo");
-    setTimeout(function () {
-        boton.classList.remove("activo");
-    }, 400);
+  const boton = botonesColor[indiceColor];
+  boton.classList.add("activo");
+  setTimeout(() => {
+    boton.classList.remove("activo");
+  }, 400);
 }
 
 function reproducirSecuencia() {
-    bloqueado = true;
-    secuenciaUsuario = [];
-    rondaTexto.textContent = secuencia.length;
+  bloqueado = true;
+  secuenciaUsuario = [];
+  rondaTexto.textContent = secuencia.length;
 
-    let indice = 0;
+  let indice = 0;
 
-    const intervalo = setInterval(function () {
-            encenderBoton(secuencia[indice]);
-            indice = indice + 1;
+  const intervalo = setInterval(() => {
+    encenderBoton(secuencia[indice]);
+    indice++;
 
-        if (indice === secuencia.length) {
-            clearInterval(intervalo);
-            setTimeout(function () {
-                bloqueado = false;
-            }, 500);
-        }
-    }, 700);
+    if (indice === secuencia.length) {
+      clearInterval(intervalo);
+      setTimeout(() => {
+        bloqueado = false;
+      }, 500);
+    }
+  }, 700);
 }
 
-botonesColor.forEach(function (boton) {
-    boton.addEventListener("click", function () {
-        if (bloqueado) {
-            return;
-        }
+botonesColor.forEach((boton) => {
+  boton.addEventListener("click", () => {
+    if (bloqueado) return;
 
-        const indiceColor = Number(boton.dataset.color);
-        encenderBoton(indiceColor);
-        secuenciaUsuario.push(indiceColor);
+    const indiceColor = Number(boton.dataset.color);
+    encenderBoton(indiceColor);
+    secuenciaUsuario.push(indiceColor);
 
-        const pasoActual = secuenciaUsuario.length - 1;
+    const pasoActual = secuenciaUsuario.length - 1;
 
-        if (secuenciaUsuario[pasoActual] !== secuencia[pasoActual]) {
-            mensaje.textContent = "Te equivocaste. Llegaste a la ronda " + secuencia.length + ".";
-            bloqueado = true;
-            return;
-        }
+    if (secuenciaUsuario[pasoActual] !== secuencia[pasoActual]) {
+      mensaje.textContent = `Te equivocaste. Llegaste a la ronda ${secuencia.length}.`;
+      bloqueado = true;
+      return;
+    }
 
-        if (secuenciaUsuario.length === secuencia.length) {
-            mensaje.textContent = "Bien hecho. Preparando la siguiente ronda.";
-            setTimeout(function () {
-                generarPaso();
-                reproducirSecuencia();
-            }, 900);
-        }
-    });
+    if (secuenciaUsuario.length === secuencia.length) {
+      mensaje.textContent = "Bien hecho. Preparando la siguiente ronda...";
+      setTimeout(() => {
+        mensaje.textContent = "";
+        generarPaso();
+        reproducirSecuencia();
+      }, 900);
+    }
+  });
 });
 
-btnIniciar.addEventListener("click", function () {
-    secuencia = [];
-    secuenciaUsuario = [];
-    mensaje.textContent = "";
-    generarPaso();
-    reproducirSecuencia();
+btnIniciar.addEventListener("click", () => {
+  secuencia = [];
+  secuenciaUsuario = [];
+  mensaje.textContent = "";
+  generarPaso();
+  reproducirSecuencia();
 });
